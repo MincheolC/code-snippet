@@ -1,0 +1,23 @@
+{
+  "name": "code-snippet",
+  "version": "1.0.0",
+  "description": "",
+  "main": "index.js",
+  "scripts": {
+    "test": "jest ."
+  },
+  "repository": {
+    "type": "git",
+    "url": "git+https://github.com/MincheolC/code-snippet.git"
+  },
+  "keywords": [],
+  "author": "",
+  "license": "ISC",
+  "bugs": {
+    "url": "https://github.com/MincheolC/code-snippet/issues"
+  },
+  "homepage": "https://github.com/MincheolC/code-snippet#readme",
+  "devDependencies": {
+    "jest": "^27.5.1"
+  }
+}
