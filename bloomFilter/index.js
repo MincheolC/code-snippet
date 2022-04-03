@@ -16,14 +16,14 @@
    - 모두가 1이면 요소는 집합에 있을 수 있음. 
  */
 
-const _ = require('lodash');
-const { createHash } = require ("crypto");
+const _ = require("lodash");
+const { createHash } = require("crypto");
 const { BitArray } = require("../bitArray");
 
-function calculateIndex (hashValue, size) {
+function calculateIndex(hashValue, size) {
   const length = 5;
-  const hexNumber = parseInt(hashValue.slice(0, length), 16)
-  return hexNumber % size
+  const hexNumber = parseInt(hashValue.slice(0, length), 16);
+  return hexNumber % size;
 }
 
 class BloomFilter {
@@ -34,31 +34,33 @@ class BloomFilter {
 
    Default: sha256
    */
-  constructor (size, hashAlgSet = ["sha256"]) {
-    this.filter = new BitArray(size)
-    this.hashAlgSet = hashAlgSet
+  constructor(size, hashAlgSet = ["sha256"]) {
+    this.filter = new BitArray(size);
+    this.hashAlgSet = hashAlgSet;
   }
 
-  hasValue (value) {
-    const valueString = value.toString(); 
-    const indexList = this.hashAlgSet.map(hashAlg => {
-      const hash = createHash(hashAlg)
+  hasValue(value) {
+    const valueString = value.toString();
+    const indexList = this.hashAlgSet.map((hashAlg) => {
+      const hash = createHash(hashAlg);
       hash.update(valueString);
       return calculateIndex(hash.copy().digest("hex"), this.filter.length());
-    }) 
-    
-    const results = indexList.map(index => {
-      const val = this.filter.get(index);
-      if (!val) {
-        this.filter.set(index, true)
-      }
-      return val
-    }).filter(v => v);
-    
+    });
+
+    const results = indexList
+      .map((index) => {
+        const val = this.filter.get(index);
+        if (!val) {
+          this.filter.set(index, true);
+        }
+        return val;
+      })
+      .filter((v) => v);
+
     return results.length > 0;
   }
 }
 
 module.exports = {
-  BloomFilter
-}
+  BloomFilter,
+};
