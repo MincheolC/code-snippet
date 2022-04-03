@@ -1,6 +1,10 @@
 const { test, expect } = require("@jest/globals");
-const { hash } = require('../')
+const { getOriginUrl, getTinyUrl } = require("../");
 
-test('test', () => {
-  expect(hash(7).length).toEqual(7)
+test("getTinyUrl and getOriginUrl", () => {
+  const sampleUrl =
+    "https://jamboard.google.com/d/1mGQzQ4JzHBzR1VkFSUGzSYe4v3E5CZPI2-WRZoYYi24/viewer";
+  
+  const tinyUrl = getTinyUrl(sampleUrl);
+  expect(getOriginUrl(tinyUrl)).toEqual(sampleUrl);
 });

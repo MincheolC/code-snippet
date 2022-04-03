@@ -1,10 +1,15 @@
+const _ = require("lodash");
+const { createHash } = require("crypto");
+
 // 단축 url을 제공해야 함
 // - 매일 1억 개의 단축 URL 생성
 // - 1160 req/sec
 // - URL avg length = 100
 
-const sampleUrl =
-  "https://jamboard.google.com/d/1mGQzQ4JzHBzR1VkFSUGzSYe4v3E5CZPI2-WRZoYYi24/viewer";
+// In-memory Store로 대체
+const store = {};
+const urlLength = 8;
+const baseUrl = "https://my-tiny-url.com";
 
 /* 
  # 해시 후 충돌 해소
@@ -19,8 +24,39 @@ const sampleUrl =
  충돌 여부를 확인하기 위해 DB 조회는 오버헤드가 크니 "블룸 필터"를 활용하자.
  */
 
-function hash (length) {
-  return "";
+function hash(alg, value) {
+  return createHash(alg).update(value).digest("hex");
+}
+
+function sha256(value) {
+  return hash("sha256", value);
+}
+
+function md5(value) {
+  return hash("md5", value);
+}
+
+function save(tinyUrl, url) {
+  if (store[tinyUrl]) {
+    throw "Already Exists";
+  }
+  store[tinyUrl] = url;
+}
+
+function shorten(url) {
+  return sha256(url).slice(0, urlLength);
+}
+
+function getTinyUrl(url) {
+  const tinyUrl = shorten(url);
+  save(tinyUrl, url);
+  return `${baseUrl}/${tinyUrl}`;
+}
+
+function getOriginUrl(tinyUrl) {
+  const regex = new RegExp(`${baseUrl}/(?<keyUrl>[\\w]+)`);
+  const key = tinyUrl.match(regex).groups.keyUrl;
+  return store[key];
 }
 
 /*
@@ -28,6 +64,7 @@ function hash (length) {
  62진법을 사용하기 
  */
 
- module.exports = {
-   hash,
- }
+module.exports = {
+  getTinyUrl,
+  getOriginUrl,
+};
